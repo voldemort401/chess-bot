@@ -1,0 +1,52 @@
+def rook function:
+  * check the turn from the board   { turn = board[-1] } ::: -1 last element contains turn
+  
+  * find the color of a piece 
+  
+  * if the turn and the color match 
+        
+        -->  get position of piece 
+
+  * if it is not equal
+      --> piece can't be moved; so exit
+
+
+  * check if anything is above the piece 
+  * if so then:
+      --> set a variable 'above' to 1 
+      --> if piece is friendly then set a variable 'firendly' to 1 if not then set it to 0 
+
+  * if not then check if anything is below the piece 
+  * if so then:
+      --> set variable above to -1
+      --> if piece is friendly then set a variable 'firendly' to 1 if not then set it to 0 
+
+  * finally if both are true then:
+    --> set variable 'above' to 0 
+    --> if both the pieces are friendly then set a variable 'firendly' to 2 if not then set it to 0 
+
+  * create a loop this loop will last for 8 generations i.e { for i  in range(8)  }
+
+      --> check what value the variable 'above' has? 
+      --> if 1 and firendly=1:
+            > check for squares only below the piece 
+
+      --> if 'above' = -1 and 'firendly'= 1:
+            > check for squares only above the piece 
+      
+       --> if 'above'=0 and firendly=2:
+            > dont check for squares vertically  
+       
+       again check for all thoes except friendly value is zero, 
+       if the statement is true then add the positions to possible positions.
+
+
+
+
+***** DIFF ABOVE VALS  ******
+
+| 1     something is above 
+|-1     nothing is above 
+| 2     something is both above and below 
+| 0     the file is empty
+
