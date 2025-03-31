@@ -1,3 +1,5 @@
+
+## probably deprecated i think i will xboard or something like that later
 import pygame
 from src.chess import chess
 class draw_brd(chess):
