@@ -1,7 +1,7 @@
 import Chess 
 chess = Chess.Chess()
-print(chess.Board())
-
+board = chess.Board()
+print(chess.PseudolegalMovegen(board()))
 
 
 

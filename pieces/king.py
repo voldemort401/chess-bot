@@ -1,6 +1,7 @@
-def king(self, piece_pos: str, board: list[str]):
-    current_pos = self.board_sqs.index(piece_pos)
-    if (board[current_pos] != self.WKING and board[current_pos] != self.BKING):
+from Chess.vars import *
+def king(piece_pos: str, board: list[str]):
+    current_pos = board_sqs.index(piece_pos)
+    if (board[current_pos] != WKING and board[current_pos] != BKING):
         return -1
  
     color = board[current_pos][:3] 

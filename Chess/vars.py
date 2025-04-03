@@ -23,3 +23,17 @@ board_sqs = ['a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8',
              'a3', 'b3', 'c3', 'd3', 'e3', 'f3', 'g3', 'h3',
              'a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2',    
              'a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1',]                            
+
+board_color = [WHITE,  BLACK,  WHITE, BLACK, WHITE, BLACK, WHITE,   BLACK,
+               BLACK,  WHITE,  BLACK, WHITE, BLACK, WHITE, BLACK,   WHITE,
+               WHITE,  BLACK,  WHITE, BLACK, WHITE, BLACK, WHITE,   BLACK,
+               BLACK,  WHITE,  BLACK, WHITE, BLACK, WHITE, BLACK,   WHITE,
+               WHITE,  BLACK,  WHITE, BLACK, WHITE, BLACK, WHITE,   BLACK,
+               BLACK,  WHITE,  BLACK, WHITE, BLACK, WHITE, BLACK,   WHITE,
+               WHITE,  BLACK,  WHITE, BLACK, WHITE, BLACK, WHITE,   BLACK,
+               BLACK,  WHITE,  BLACK, WHITE, BLACK, WHITE, BLACK,   WHITE]
+
+edges = ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
+        "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
+        "a2", "a3", "a4", "a5", "a6", "a7",
+        "h2", "h3", "h4", "h5", "h6", "h7"]

@@ -1,9 +1,10 @@
-def knight(self,piece_pos:str, board:list[str]):
-    current_pos = self.board_sqs.index(piece_pos)+16
-    current_pos2 = self.board_sqs.index(piece_pos)+16
+from Chess.vars import *
+def knight(piece_pos:str, board:list[str]):
+    current_pos = board_sqs.index(piece_pos)+16
+    current_pos2 = board_sqs.index(piece_pos)+16
     possible_moves = set() 
 
-    if (board[current_pos-16] != self.BKNIGHT and board[current_pos-16]!= self.WKNIGHT):
+    if (board[current_pos-16] != BKNIGHT and board[current_pos-16]!= WKNIGHT):
         return -1 
     # create a kind of circle around the knight
     for i in range(8):
@@ -41,13 +42,13 @@ def knight(self,piece_pos:str, board:list[str]):
         if (j>63):
             possible_moves.remove(j)
         try:
-            if (self.board_color[j] == self.board_color[self.board_sqs.index(piece_pos)]):
+            if (board_color[j] == board_color[board_sqs.index(piece_pos)]):
                 possible_moves.remove(j)
         except IndexError:
             pass
 
     for i in possible_moves[:]:
-        if(board[i][:3] == board[self.board_sqs.index(piece_pos)][:3]):
+        if(board[i][:3] == board[board_sqs.index(piece_pos)][:3]):
             possible_moves.remove(i)
     
 
@@ -55,9 +56,9 @@ def knight(self,piece_pos:str, board:list[str]):
     ##PS:: I am not a great explainer if you dont get it just comment this block out and run the test again
     ranks = ["a","b","c","d","e","f","g","h"]
     for i in possible_moves[:]:
-        current_pos=self.board_sqs.index(piece_pos)
-        curr_rank = self.board_sqs[current_pos][0]
-        r_pm_l    = self.board_sqs[i][0]
+        current_pos=board_sqs.index(piece_pos)
+        curr_rank = board_sqs[current_pos][0]
+        r_pm_l    = board_sqs[i][0]
         if (ranks.index(curr_rank)+1 ==   ranks.index(r_pm_l) or ranks.index(curr_rank)-1 == ranks.index(r_pm_l)):
             pass
         elif (ranks.index(curr_rank)+2 == ranks.index(r_pm_l) or ranks.index(curr_rank)-2 == ranks.index(r_pm_l)):
