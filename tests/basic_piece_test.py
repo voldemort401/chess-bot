@@ -1,5 +1,6 @@
-import src 
-chess=src.chess.chess()
+## just ignore this fr now i will fix these tests later
+from Chess import *
+chess=Chess.Chess()
 print("Pieces movements test")
 print("Loading position: rnbqkbnr/pppppppp/8/8/8/8/P7/RNBQKBNR w KQkq - 0 1 ")
 board = chess.Board("rnbqkbnr/pppppppp/8/8/8/8/P7/RNBQKBNR w KQkq - 0 1")
