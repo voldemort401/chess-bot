@@ -1,5 +1,5 @@
-from src.chess import chess 
-class PseudoLegalMoves(chess):
+from Chess.chess import Chess 
+class PseudoLegalMoves(Chess):
     def __init__(self):
         super(PseudoLegalMoves,self).__init__()
         self.board_color = [self.WHITE,  self.BLACK,  self.WHITE, self.BLACK, self.WHITE, self.BLACK, self.WHITE,  self.BLACK,
