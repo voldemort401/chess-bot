@@ -6,40 +6,21 @@ def pawn(piece_pos:str, board:list[str]):
     color = board[piece_index][:3]
 
     plegal_sq = []
-    canMove2squares = True
-    if (color == WHITE and file == 2):
+    canMove2squares = False 
+    if (color == WHITE or rank == '2'):
+        canMove2squares =  True 
+    print(color, rank)
+    if (color == BLACK and rank == '7'):
         canMove2squares = True
-    if (color == BLACK and file == 7):
-        canMove2squares = True
 
 
-    if (canMove2squares and color == WHITE):
-        plegal_sq.append(piece_index-8)
-        plegal_sq.append(piece_index-16)
-
-    if (canMove2squares and color == BLACK):
-        plegal_sq.append(piece_index+8)
-        plegal_sq.append(piece_index+16)
-    
-    if (not canMove2squares and color==WHITE):
-        plegal_sq.append(piece_index-8)
-    if (not canMove2squares and color==BLACK):
-        plegal_sq.append(piece_index+8) 
-    
-    
-    ## attacking squares
-    if (color == WHITE):
-        plegal_sq.append(piece_index-7)
-        plegal_sq.append(piece_index-9)
-    if (color == BLACK):
-        plegal_sq.append(piece_index+7)
-        plegal_sq.append(piece_index+9)
+    for i in range(2):  ## because the maximum moves the pawn can do in one turn is 2 
+        if (canMove2squares):
+            if (color == WHITE):
+                piece_index-=8
+                plegal_sq.append(piece_index)
+            elif (color == BLACK):
+                piece_index+=8 
+                plegal_sq.append(piece_index)
     ## ENPASSANT
-    
-
-
-
-
-    for i in plegal_sq:
-        print(i)
     return plegal_sq
