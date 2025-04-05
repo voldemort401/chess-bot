@@ -123,7 +123,9 @@ class board():
               self.board.insert(old_piece_pos, EMPTY)
               self.board.insert(new_piece_pos, piece)
               break
-
+        
+        if (board == self.board):
+            return "Illegal move"
         return self.board
 
     
