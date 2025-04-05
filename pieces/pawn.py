@@ -25,27 +25,53 @@ def pawn(piece_pos:str, board:list[str]):
             elif (color == BLACK and board[piece_index+8] == EMPTY):
                 plegal_sq.append(piece_index+8)
 
-    ## currently if the piece is in the edges some funky stuff happens FIXIT LATER 
-    if (color == WHITE and board[piece_index-9][:3] != color and board[piece_index-9] != EMPTY):
-        plegal_sq.append(piece_index-9)          
-    if (color == WHITE and board[piece_index-7][:3] != color and board[piece_index-7] != EMPTY):
-        plegal_sq.append(piece_index-7)
+    if (file == "a"):
+        if (color == WHITE and board[piece_index-7][:3] != color and board[piece_index-7] != EMPTY):
+            plegal_sq.append(piece_index-7)          
+        if (color == BLACK and board[piece_index+9][:3] != color and board[piece_index+9] != EMPTY):
+            plegal_sq.append(piece_index+9)
 
-    if (color == BLACK and board[piece_index+9][:3] != color and board[piece_index+9] != EMPTY):
-        plegal_sq.append(piece_index+9)
-    if (color == BLACK and board[piece_index+7][:3] != color and board[piece_index+7] != EMPTY):
-        plegal_sq.append(piece_index+7)
+    elif (file == "h"):
+        if (color == WHITE and board[piece_index-9][:3] != color and board[piece_index-9] != EMPTY):
+            plegal_sq.append(piece_index-9)
+        if (color == BLACK and board[piece_index+7][:3] != color and board[piece_index+7] != EMPTY):
+            plegal_sq.append(piece_index+7)
+ 
+    else:
+        if (color == WHITE and board[piece_index-9][:3] != color and board[piece_index-9] != EMPTY):
+            plegal_sq.append(piece_index-9)          
+        if (color == WHITE and board[piece_index-7][:3] != color and board[piece_index-7] != EMPTY):
+            plegal_sq.append(piece_index-7)
+        if (color == BLACK and board[piece_index+9][:3] != color and board[piece_index+9] != EMPTY):
+            plegal_sq.append(piece_index+9)
+        if (color == BLACK and board[piece_index+7][:3] != color and board[piece_index+7] != EMPTY):
+            plegal_sq.append(piece_index+7)
     
     ## enpassant
     possible_enpassant_squares = []
     piece_index                = board_sqs.index(piece_pos) 
+
     if (color == WHITE):
-        possible_enpassant_squares.append(piece_index-9)
-        possible_enpassant_squares.append(piece_index-7)
+        if (file == "a"):
+            possible_enpassant_squares.append(piece_index-7)
+        elif (file == "h"):
+            possible_enpassant_squares.append(piece_index-9)
+        else:
+            possible_enpassant_squares.append(piece_index-9)
+            possible_enpassant_squares.append(piece_index-7)
+
     elif (color == BLACK):
-        possible_enpassant_squares.append(piece_index+9)
-        possible_enpassant_squares.append(piece_index+7)
+        if (file == "a"):
+            possible_enpassant_squares.append(piece_index+9)
+        elif (file == "h"):
+            possible_enpassant_squares.append(piece_index+7)
+        else:
+            possible_enpassant_squares.append(piece_index+7)
+            possible_enpassant_squares.append(piece_index+9)
 
-    
-
+    for i,j in enumerate(possible_enpassant_squares):
+        print(i,j) 
+        if (board[j+8][:3] != color):
+            pass 
+        
     return plegal_sq
