@@ -64,6 +64,7 @@ class board():
         if (turn == WHITE):
             move_counter=self.board[-1]
             move_counter+=1
+            self.board.pop(65)
             self.board.insert(65, move_counter)
     
         Piece_is_pawn = False
