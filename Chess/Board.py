@@ -61,16 +61,7 @@ class board():
     def Move(self, move: str):
         board = self.__get_current_board__()
         turn = self.board[64]
-<<<<<<< HEAD
             
-=======
-        if (turn == WHITE):
-            move_counter=self.board[-1]
-            move_counter+=1
-            self.board.pop(65)
-            self.board.insert(65, move_counter)
-    
->>>>>>> cd86f357b92cb8a292bbeede681a173aecd20d90
         Piece_is_pawn = False
         if (move.rfind('x')  != -1):
             isCapturing = True
@@ -143,16 +134,10 @@ class board():
                 self.board.insert(64, BLACK)
 
               break
-<<<<<<< HEAD
 
         if (board == self.board):
             return 'Illegal move'
 
-=======
-        
-        if (board == self.board):
-            return "Illegal move"
->>>>>>> cd86f357b92cb8a292bbeede681a173aecd20d90
         return self.board
 
     
