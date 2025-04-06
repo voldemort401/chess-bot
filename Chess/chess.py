@@ -92,15 +92,31 @@ def isinCheck(board, king_pos) -> bool | str:
         j = j.strip('[ ]') ## removing [ and ] 
         j = j.split(',') 
         for k in j:
-            print(k, king_pos)
             if (k == king_pos):
-                
                 return True
-def filterlegalmoves(moves:list, board):
+
+def filterPseudolegalmoves(moves:list, board):
     current_turn = board[64]
+    current_board = board
     if (current_turn == WHITE):
         king_pos = board.index(WKING)
     elif (current_turn == BLACK):
         king_pos = board.index(BKING)
 
-    isinCheck(board, king_pos) 
+    for i,j in enumerate(moves):
+        k = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
+        old_piece_pos = board_sqs.index(k[0].lstrip())
+        target_square = k[1].replace('[]','').strip('[ ]').split(',')
+
+        if (target_square == ['']):
+            moves.remove(j)
+        else:
+            piece         = board[old_piece_pos]
+            for z in target_square:
+              new_piece_pos = int(z)
+              current_board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(current_board)]
+              current_board = [piece if x == new_piece_pos else o for x,o in enumerate(current_board)]
+              if (isinCheck(board, king_pos)):
+                moves.remove(z)
+              current_board = board
+    return moves

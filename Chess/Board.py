@@ -1,5 +1,5 @@
 from Chess.vars import * ## importing the variables
-from Chess.chess import generatePseudoLegalMoves
+from Chess.chess import generatePseudoLegalMoves, filterPseudolegalmoves
 class board():
     def __init__(self,fen:str = None):
         self.fen = fen
@@ -78,10 +78,9 @@ class board():
             return 'ERR: Incorrect notation'
 
         piece = move[0] if Piece_is_pawn == False else ''
-        target_square = move[1:]
-
-        Plegal_moves  = generatePseudoLegalMoves(board, piece) 
-
+        target_square = move[1:] if Piece_is_pawn == False else move
+        Plegal_moves  = generatePseudoLegalMoves(board,piece,turn) 
+        Plegal_moves  = filterPseudolegalmoves(Plegal_moves, self.board) 
         if (turn == WHITE):
             if (piece == 'N' or piece == 'n'):                    
                 piece = WKNIGHT                                                                                          
@@ -108,17 +107,13 @@ class board():
                 piece = BPAWN
             elif ( piece == 'Q' or piece == 'q'):        
                 piece = BQUEEN
-                                                                                          
-
         for i,j in enumerate(Plegal_moves):
             if (j.__contains__(str(board_sqs.index(target_square)))):    
               j = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
               old_piece_pos = board_sqs.index(j[0].lstrip())
               new_piece_pos = board_sqs.index(target_square)
-              self.board.pop(old_piece_pos)
-              self.board.insert(old_piece_pos, EMPTY)
-              self.board.insert(new_piece_pos, piece)
-              
+              self.board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(self.board)]
+              self.board = [piece if x == new_piece_pos else o for x,o in enumerate(self.board)]
               ## updating the turn and move counter
               if (turn == WHITE):
                 move_counter=self.board[-1]
@@ -135,9 +130,8 @@ class board():
 
               break
 
-        if (board == self.board):
-            return 'Illegal move'
-
+        if (self.board == board):
+            return 'illegal move'
         return self.board
 
     

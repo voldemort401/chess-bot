@@ -76,7 +76,7 @@ def pawn(piece_pos:str, board:list[str]):
             
         if (board[piece_index+1] == BPAWN and board[piece_index-1] == BPAWN):
             canenpassant = False
-        
+         
         if (canenpassant):
             print(i,j) 
         
