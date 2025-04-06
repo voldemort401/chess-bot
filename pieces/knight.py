@@ -36,16 +36,18 @@ def knight(piece_pos:str, board:list[str]):
         possible_moves.add(current_pos)
         possible_moves.add(current_pos2)
     possible_moves = list(possible_moves)
+
     for i,j in enumerate(possible_moves[:]):
         if (j<0):
             possible_moves.remove(j)
-        if (j>63):
+        elif (j>63):
             possible_moves.remove(j)
-        try:
-            if (board_color[j] == board_color[board_sqs.index(piece_pos)]):
-                possible_moves.remove(j)
-        except IndexError:
-            pass
+        else:
+            try:
+                if (board_color[j] == board_color[board_sqs.index(piece_pos)]):
+                    possible_moves.remove(j)
+            except IndexError:
+                pass
 
     for i in possible_moves[:]:
         if(board[i][:3] == board[board_sqs.index(piece_pos)][:3]):
