@@ -49,6 +49,7 @@ def pawn(piece_pos:str, board:list[str]):
     
     ## enpassant
     possible_enpassant_squares = []
+    canenpassant               = None 
     piece_index                = board_sqs.index(piece_pos) 
 
     if (color == WHITE):
@@ -68,10 +69,15 @@ def pawn(piece_pos:str, board:list[str]):
         else:
             possible_enpassant_squares.append(piece_index+7)
             possible_enpassant_squares.append(piece_index+9)
-
+    
     for i,j in enumerate(possible_enpassant_squares):
-        print(i,j) 
-        if (board[j+8][:3] != color):
-            pass 
+        if (board[piece_index+1] == WPAWN and board[piece_index-1] == WPAWN):
+            canenpassant = False
+            
+        if (board[piece_index+1] == BPAWN and board[piece_index-1] == BPAWN):
+            canenpassant = False
+        
+        if (canenpassant):
+            print(i,j) 
         
     return plegal_sq
