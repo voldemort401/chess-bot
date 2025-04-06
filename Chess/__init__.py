@@ -6,5 +6,5 @@ from .chess import generatePseudoLegalMoves
 class Chess():
     def Board(self, fen:str=None):
         return board(fen)
-    def PseudolegalMovegen(self,board):
-        return generatePseudoLegalMoves(board)
+    def PseudolegalMovegen(self,board,color=None):
+        return generatePseudoLegalMoves(board, color=color)
