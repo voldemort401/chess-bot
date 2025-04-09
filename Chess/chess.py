@@ -32,7 +32,7 @@ def generatePseudoLegalMoves(board, piece:str=None, color=None):
                  elif (j == WROOK and piece == 'R'):
                      all_pseudo_moves.append(f'{board_sqs[i]}: {rook(board_sqs[i], board)} ')
                  elif (j == WBISHOP and piece == 'B'): 
-                     all_pseudo_moves.append(f'{board_sqs[i]} {bishop(board_sqs[i], board)} ')
+                     all_pseudo_moves.append(f'{board_sqs[i]}: {bishop(board_sqs[i], board)} ')
                  elif (j == WPAWN and piece == ''): 
                      all_pseudo_moves.append(f'{board_sqs[i]}: {pawn(board_sqs[i], board)} ')
                  elif (j == WQUEEN and piece == 'Q'):       
@@ -76,7 +76,7 @@ def isinCheck(board, king_pos) -> bool | str:
     if (color == WHITE):
         enmy_color = BLACK
     elif (color == BLACK):
-        enmy_color == WHITE
+        enmy_color = WHITE
     else:
         return 'ERR: Failed to get color'
 
@@ -105,18 +105,23 @@ def filterPseudolegalmoves(moves:list, board):
 
     for i,j in enumerate(moves):
         k = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
-        old_piece_pos = board_sqs.index(k[0].lstrip())
-        target_square = k[1].replace('[]','').strip('[ ]').split(',')
+        old_piece_pos = board_sqs.index(k[0])
+        target_square = k[1].replace('[]','')
 
-        if (target_square == ['']):
+        target_square = target_square.replace('[','')
+        target_square = target_square.replace(']', '')
+        target_square = target_square.replace(',', '')
+        target_square = list(target_square)
+        if (target_square == ''):
             moves.remove(j)
         else:
             piece         = board[old_piece_pos]
             for z in target_square:
-              new_piece_pos = int(z)
-              current_board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(current_board)]
-              current_board = [piece if x == new_piece_pos else o for x,o in enumerate(current_board)]
-              if (isinCheck(board, king_pos)):
-                moves.remove(z)
-              current_board = board
+                if (z != ' '):
+                    new_piece_pos = int(z)
+                    current_board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(current_board)]
+                    current_board = [piece if x == new_piece_pos else o for x,o in enumerate(current_board)]
+                    if (isinCheck(board, king_pos)):
+                        moves.remove(z)
+                    current_board = board
     return moves

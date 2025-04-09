@@ -1,7 +1,7 @@
-
 ## probably deprecated i think i will xboard or something like that later
 import pygame
-from src.chess import chess
+import Chess.chess 
+
 class draw_brd(chess):
     def __init__(self):
         self.height  : int = 518 ## : int makes the warnings go away

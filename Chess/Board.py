@@ -61,7 +61,9 @@ class board():
     def Move(self, move: str):
         board = self.__get_current_board__()
         turn = self.board[64]
-            
+        if (move == ''):
+            return "Invalid move"
+        bmove = move  
         Piece_is_pawn = False
         if (move.rfind('x')  != -1):
             isCapturing = True
@@ -79,8 +81,8 @@ class board():
 
         piece = move[0] if Piece_is_pawn == False else ''
         target_square = move[1:] if Piece_is_pawn == False else move
-        Plegal_moves  = generatePseudoLegalMoves(board,piece,turn) 
-        Plegal_moves  = filterPseudolegalmoves(Plegal_moves, self.board) 
+        Plegal_moves  = set(generatePseudoLegalMoves(board,piece,turn))
+        Plegal_moves  = filterPseudolegalmoves(list(Plegal_moves), self.board) 
         if (turn == WHITE):
             if (piece == 'N' or piece == 'n'):                    
                 piece = WKNIGHT                                                                                          
@@ -95,7 +97,7 @@ class board():
             elif (piece == 'Q' or piece == 'q'):       
                 piece = WQUEEN
         else:
-            if (j  == 'N' or piece == 'n'):
+            if (piece  == 'N' or piece == 'n'):
                 piece = BKNIGHT
             elif ( piece == 'K' or piece == 'k'):               
                 piece = BKING
@@ -107,34 +109,40 @@ class board():
                 piece = BPAWN
             elif ( piece == 'Q' or piece == 'q'):        
                 piece = BQUEEN
+        
         for i,j in enumerate(Plegal_moves):
             if (j.__contains__(str(board_sqs.index(target_square)))):    
               j = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
               old_piece_pos = board_sqs.index(j[0].lstrip())
               new_piece_pos = board_sqs.index(target_square)
+
+              if (self.board[new_piece_pos][:3] != turn and self.board[new_piece_pos] != EMPTY):
+                captured_pieces.append(self.board[new_piece_pos])
               self.board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(self.board)]
               self.board = [piece if x == new_piece_pos else o for x,o in enumerate(self.board)]
               ## updating the turn and move counter
               if (turn == WHITE):
-                move_counter=self.board[-1]
-                move_counter+=1
-                self.board.pop(64)
-                self.board.insert(64, BLACK)
-                
-                self.board.pop(65)
-                self.board.insert(65, move_counter)
+                print(self.board[65])
+                move_counter = self.board[65]
+                self.board[64] = BLACK
+                self.board[65] = int(move_counter)+1 
 
               elif (turn == BLACK):
-                self.board.pop(64)
-                self.board.insert(64, BLACK)
-
+                self.board[64] = WHITE
               break
 
-        if (self.board == board):
-            return 'illegal move'
+        move_counter = int(self.board[65])
+        if (turn == WHITE):
+            moves_played.append(['', ''])
+            moves_played[move_counter-1][0] = bmove
+        elif (turn == BLACK):
+            moves_played[move_counter-1][1] = bmove
+        else:
+            return f'turn value "{turn}" is not valid'
+        
+        print(moves_played)
         return self.board
 
     
-
     def __call__(self):
-        return self.__create_board__()
+        return self.__get_current_board__()
