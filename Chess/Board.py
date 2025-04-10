@@ -1,5 +1,6 @@
 from Chess.vars import * ## importing the variables
 from Chess.chess import generatePseudoLegalMoves, filterPseudolegalmoves
+from pieces.king import castle
 class board():
     def __init__(self,fen:str = None):
         self.fen = fen
@@ -65,6 +66,31 @@ class board():
             return "Invalid move"
         bmove = move  
         Piece_is_pawn = False
+        if (move.lstrip().rstrip() == 'O-O'):
+            if (turn == WHITE):
+                king_pos = board.index(WKING)
+            elif (turn == BLACK):
+                king_pos = board.index(BKING)
+            else:
+                return 'Unexpected error occured'
+            if (type(castle(king_pos, self.board, move.lstrip().rstrip())) == str):
+                return 'Illegal move'
+            
+            self.board = castle(king_pos, self.board, move.lstrip().rstrip)
+
+        elif (move.lstrip().rstrip() == 'O-O-O'):
+            if (turn == WHITE):
+                king_pos = board.index(WKING)
+            elif (turn == BLACK):
+                king_pos = board.index(BKING)
+            else:
+                return 'Unexpected error occured'
+            if (type(castle(king_pos, self.board, move.lstrip().rstrip())) == str):
+                return 'Illegal move'
+            
+            self.board = castle(king_pos, self.board, move.lstrip().rstrip())
+
+
         if (move.rfind('x')  != -1):
             isCapturing = True
             move = move.replace('x','')
@@ -88,8 +114,10 @@ class board():
                 piece = WKNIGHT                                                                                          
             elif (piece == 'K' or piece == 'k'):              
                 piece = WKING
+                king_moved[0] = 1 
             elif (piece == 'R' or piece == 'r'):
                 piece = WROOK
+                rook_moved[0] = 1
             elif (piece == 'B' or piece == 'b'): 
                 piece = WBISHOP
             elif (piece == ''): 
@@ -101,15 +129,17 @@ class board():
                 piece = BKNIGHT
             elif ( piece == 'K' or piece == 'k'):               
                 piece = BKING
+                king_moved[1] = 1 
             elif ( piece == 'R' or piece == 'r'):
                 piece = BROOK
+                rook_moved[1] = 1
             elif ( piece == 'B' or piece == 'b'): 
                 piece = BBISHOP
             elif ( piece == ''): 
                 piece = BPAWN
             elif ( piece == 'Q' or piece == 'q'):        
                 piece = BQUEEN
-        
+         
         for i,j in enumerate(Plegal_moves):
             if (j.__contains__(str(board_sqs.index(target_square)))):    
               j = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
@@ -139,8 +169,6 @@ class board():
             moves_played[move_counter-1][1] = bmove
         else:
             return f'turn value "{turn}" is not valid'
-        
-        print(moves_played)
         return self.board
 
     

@@ -77,7 +77,68 @@ def king(piece_pos: str, board: list[str]):
         if (board[i][:3] == color):
             possible_moves.remove(i)
  
-    ## casteling
-       
     return possible_moves
- 
+
+def castle(piece_pos:str, board: list, move:str):
+    from Chess.chess import isinCheck
+    current_pos = board_sqs.index(piece_pos)
+    board_cpy = board
+    if (board[current_pos] != WKING and board[current_pos] != BKING):
+        return -1
+    color = board[current_pos][:3] 
+    
+
+    if (color == WHITE and king_moved[0] == 0 and rook_moved[0] == 0):
+        if (board[current_pos+1] == EMPTY and board[current_pos+2] == EMPTY and move == 'O-O'):  ## kingside castle
+            for i in 2:
+                king_pos = current_pos + 2
+                rook_pos = king_pos-1
+                board[current_pos] == EMPTY
+                board[63]          == EMPTY
+                board[king_pos]    == WKING
+                board[rook_pos]    == WROOK
+                if (isinCheck(board, king_pos)):
+                    board = board_cpy
+                    return "can't O-O"
+
+            
+        if (board[current_pos-1] == EMPTY and board[current_pos-2] == EMPTY and board[current_pos-3] == EMPTY and move == 'O-O-O'): ## queenside castle
+            for i in 2:
+                king_pos = current_pos + i
+                rook_pos = king_pos-1
+
+                board[current_pos] == EMPTY
+                board[56]          == EMPTY
+                board[king_pos]    == WKING
+                board[rook_pos]    == WROOK
+                if (isinCheck(board, king_pos)):
+                    board = board_cpy
+                    return "can't O-O-O"
+
+    elif (color == BLACK and king_moved[1] == 0 and rook_moved[1] == 0):
+        if (board[current_pos+1] == EMPTY and board[current_pos+2] == EMPTY and move == 'O-O'):  ## kingside castle
+            for i in 2:
+                king_pos = current_pos + i 
+                rook_pos = king_pos-1
+                board[current_pos] == EMPTY
+                board[7]          == EMPTY
+                board[king_pos]    == BKING
+                board[rook_pos]    == BROOK
+                if (isinCheck(board, king_pos)):
+                    board = board_cpy
+                    return "can't O-O"
+
+        if (board[current_pos-1] == EMPTY and board[current_pos-2] == EMPTY and board[current_pos-3] == EMPTY and move == 'O-O-O'): ## queenside castle
+            for i in 2:
+                king_pos = current_pos + i
+                rook_pos = king_pos-1
+                board[current_pos] == EMPTY
+                board[0]          == EMPTY
+                board[king_pos]    == BKING
+                board[rook_pos]    == BROOK
+                if (isinCheck(board, king_pos)):
+                    board = board_cpy
+                    return "can't O-O-O"
+
+    
+    return board
