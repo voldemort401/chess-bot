@@ -2,7 +2,7 @@ from Chess.vars import * ## importing the variables
 from Chess.chess import generatePseudoLegalMoves, filterPseudolegalmoves
 from pieces.king import castle
 class board():
-    def __init__(self,fen:str = None):
+    def __init__(self,fen = None):
         self.fen = fen
         self.board=[]
         if (fen != None):
@@ -75,7 +75,7 @@ class board():
                 return 'Unexpected error occured'
             if (type(castle(king_pos, self.board, move.lstrip().rstrip())) == str):
                 return 'Illegal move'
-            
+
             self.board = castle(king_pos, self.board, move.lstrip().rstrip)
 
         elif (move.lstrip().rstrip() == 'O-O-O'):
@@ -85,6 +85,7 @@ class board():
                 king_pos = board.index(BKING)
             else:
                 return 'Unexpected error occured'
+            
             if (type(castle(king_pos, self.board, move.lstrip().rstrip())) == str):
                 return 'Illegal move'
             
@@ -157,6 +158,13 @@ class board():
                 self.board[64] = BLACK
                 self.board[65] = int(move_counter)+1 
 
+                if (piece == ''):
+                    half_move_clock = 0
+                if(board[new_piece_pos]!= EMPTY and board[new_piece_pos][:3] != turn):
+                    half_move_clock =0 
+
+                half_move_clock+=1
+
               elif (turn == BLACK):
                 self.board[64] = WHITE
               break
@@ -174,3 +182,4 @@ class board():
     
     def __call__(self):
         return self.__get_current_board__()
+

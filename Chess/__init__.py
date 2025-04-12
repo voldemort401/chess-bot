@@ -1,4 +1,4 @@
-__all__ = ["chess", "PseudolegalMoves", "isLegalMove", "Board", "vars"]
+__all__ = ["chess",  "Board", "vars"]
 
 from . import vars
 class Chess():
@@ -22,3 +22,6 @@ class Chess():
             moves.append('O-O-O')
 
         return generatePseudoLegalMoves(board, color=color) + moves
+    def LegalMoves(self,board):
+        from .chess import legal_move_gen
+        return legal_move_gen(board) 

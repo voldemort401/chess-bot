@@ -1,5 +1,5 @@
 from Chess.vars import *
-def bishop(piece_pos: str, board: list[str], q=0 ) -> list[str] | int: 
+def bishop(piece_pos: str, board: list[str], q=0 ): 
         if (board[board_sqs.index(piece_pos)] != BBISHOP and board[board_sqs.index(piece_pos)] != WBISHOP and q == 0):
             return -1 
         current_pos = board_sqs.index(piece_pos)

@@ -1,10 +1,10 @@
 from Chess.vars import *
-def rook(pos_piece: str, board: list[str], q=0) -> list[int | None]:
+def rook(pos_piece: str, board: list[str], q=0):
     pos = []
     piece = board[board_sqs.index(pos_piece)]
 
-    piece_index = board.index(piece)
-    piece_index2 = board.index(piece)
+    piece_index = board_sqs.index(pos_piece) 
+    piece_index2 = piece_index
     
     piece_sq = board_sqs[piece_index] # find the pos of the piece in algebric notation 
     file,rank = piece_sq
@@ -28,7 +28,7 @@ def rook(pos_piece: str, board: list[str], q=0) -> list[int | None]:
                     break
 
         piece_index2 += 8
-        if (piece_index2 < 63):
+        if (piece_index2 <= 63):
             if (board_sqs[piece_index2][0] == file):
                 if (board[piece_index2] == EMPTY):
                     pos.append(piece_index2)
@@ -42,8 +42,8 @@ def rook(pos_piece: str, board: list[str], q=0) -> list[int | None]:
     
 
 
-    piece_index = board.index(piece)
-    piece_index2 = board.index(piece)
+    piece_index = board_sqs.index(pos_piece) 
+    piece_index2 = piece_index 
     # horizontal movements
     for i in range(8):
         piece_index  -= 1
@@ -61,7 +61,7 @@ def rook(pos_piece: str, board: list[str], q=0) -> list[int | None]:
                     break
 
 
-        if (piece_index2 < 63):
+        if (piece_index2 <= 63):
             if (board_sqs[piece_index2][1] == rank):
                 if (board[piece_index2] == EMPTY):
                     pos.append(piece_index2)
