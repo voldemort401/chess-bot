@@ -17,17 +17,13 @@ def king(piece_pos, board: list[str]):
  
     color = board[current_pos][:3] 
     possible_moves = []    
-    pve9 = pve7 = pve1 = pve8 = True
-    nve9 = nve7 = nve1 = nve8 = True
-
     possible_moves = [current_pos+9 , current_pos-9, current_pos+1 , current_pos-1, current_pos+7, current_pos-7, 
                       current_pos+8, current_pos-8]
 
     for i in possible_moves[:]:
         if (i > 63):
             possible_moves.remove(i)
-            break
-        if (board[i][:3] == color):
+        elif (board[i][:3] == color):
             possible_moves.remove(i)
     return possible_moves
 
