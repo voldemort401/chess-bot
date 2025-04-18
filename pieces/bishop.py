@@ -42,7 +42,6 @@ def bishop(piece_pos: str, board: list[str], q=0 ):
                 elif (board[current_pos][:3] != color):
                     possible_pos.append(current_pos)
                     pve9 = False 
-
             if (pve7):
                 current_pos+=7
                 if (board[current_pos] == EMPTY):
@@ -57,13 +56,20 @@ def bishop(piece_pos: str, board: list[str], q=0 ):
                     possible_pos.append(current_pos)
                     pve7 = False
 
+
         current_pos = PIECE_POS
         for i in range(8):
-            if (board_sqs[current_pos] in edges):
-                if (current_pos < PIECE_POS):
-                    current_pos=PIECE_POS
-                    nve9 = False 
-                    nve7 = True
+            if (current_pos-9 >64 or current_pos < 0):
+                nve9=False
+            if (current_pos-7 > 64 or current_pos <0):
+                nve7=False
+
+            if (current_pos > 0 and current_pos < 64):
+                if (board_sqs[current_pos] in edges):
+                    if (current_pos < PIECE_POS):
+                        current_pos=PIECE_POS
+                        nve9 = False 
+                        nve7 = True
 
             if (nve9):    
                 current_pos -= 9

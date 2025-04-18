@@ -21,7 +21,7 @@ def king(piece_pos, board: list[str]):
                       current_pos+8, current_pos-8]
 
     for i in possible_moves[:]:
-        if (i > 63):
+        if (i > 63 or i < 0):
             possible_moves.remove(i)
         elif (board[i][:3] == color):
             possible_moves.remove(i)

@@ -50,13 +50,11 @@ def rook(pos_piece: str, board: list[str], q=0):
         piece_index2 += 1 
         if (piece_index > 0):
             if (board_sqs[piece_index][1] == rank):
-                if ( board[piece_index] == EMPTY or board[piece_index][:3] != color):
+                if ( board[piece_index] == EMPTY):
                     pos.append(piece_index)
-        
                 elif (board[piece_index][:3] != color):
                     pos.append(piece_index)
                     break
-                
                 elif (board[piece_index][:3] == color):
                     break
 
