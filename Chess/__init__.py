@@ -28,16 +28,4 @@ class Chess():
 
     def get_moves(self,board):
         from .chess import legal_move_gen
-        legal_moves = legal_move_gen(board)
-        for i,j in enumerate(legal_moves):
-            piece_pos      = vars.board_sqs[board.index(j[1])]
-            target_squares = j[0]
-            target_squares = target_sq_cpy = target_squares.replace(' ', '')
-            target_squares  = target_squares.split(',')
-
-            for k in target_squares:
-                target_sq_cpy.replace(str(k), str(vars.board_sqs[k]))
-
-
-
         return legal_move_gen(board)

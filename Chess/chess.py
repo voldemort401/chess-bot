@@ -71,10 +71,10 @@ def generatePseudoLegalMoves(board, piece=None, color=None):
                      pseudo_moves.update({position : list(pawn(piece_pos=position, board=board))})
                  if (j == WQUEEN):       
                      pseudo_moves.update({position : list(queen(piece_pos=position, board=board))})
-
-    return pseudo_moves
+    
+    pseudo_moves = {k:v for k,v in pseudo_moves.items() if v != []} # removes the pieces with no moves
+    return pseudo_moves 
  
-
 def isinCheck(board, king_pos) -> bool | str:
     color = board[king_pos][:3]
 
@@ -93,65 +93,41 @@ def isinCheck(board, king_pos) -> bool | str:
             return False
 
     black_moves = generatePseudoLegalMoves(board=board, piece=None, color=enmy_color)
-    for i,j in enumerate(black_moves):
-        k = j.split(':')
-        for z,o in enumerate(k):
-            if (z == 1):
-                o = o.replace('[','')
-                o = o.replace(']','')
-                o = o.lstrip().rstrip()
-                o = o.replace(' ', '')
-                o = o.split(',')
-                if str(king_pos) in o:
-                    return True
+    for keys in black_moves:
+        squares = black_moves.get(keys)
+        if king_pos in squares:
+            return True
 
     return False 
 
-def filterPseudolegalmoves(moves:list, board, turn = None):
+def filterPseudolegalmoves(moves:dict, board, turn = None):
     if (turn == None):
         current_turn = board[64]
     else:
         current_turn = turn
     current_board = board
+    
+    for keys in moves:
+        old_piece_pos = board_sqs.index(keys)
+        target_square = moves.get(keys) 
+        piece         = board[old_piece_pos]
+        for new_piece_pos in target_square:            
+            if (board[new_piece_pos] != WKING and board[new_piece_pos] != BKING):
+                current_board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(current_board)]
+                current_board = [piece if x == new_piece_pos else o for x,o in enumerate(current_board)]
 
-    for i,j in enumerate(moves):
-        k = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
-        old_piece_pos = board_sqs.index(k[0])
-        target_square = k[1].replace('[]','')
+                if (current_turn == WHITE):
+                    king_pos = current_board.index(WKING)
+                elif (current_turn == BLACK):
+                    king_pos = current_board.index(BKING)
 
-        target_square = target_square.replace('[','')
-        target_square = target_square.replace(']', '')
-        target_square = target_square.lstrip()
-        target_square = target_square.rstrip()
-        target_square = target_square.split(',')
-        if (target_square == ''):
-            moves.remove(j)
-        else:
-            piece         = board[old_piece_pos]
-            for z in target_square:
-                if (z != ''): 
-                    z = z.replace(' ', '')
-                    new_piece_pos = int(z)
-                    if (board[new_piece_pos] != WKING and board[new_piece_pos] != BKING):
-                        current_board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(current_board)]
-                        current_board = [piece if x == new_piece_pos else o for x,o in enumerate(current_board)]
-                        if (current_turn == WHITE):
-                            king_pos = current_board.index(WKING)
-                        elif (current_turn == BLACK):
-                            king_pos = current_board.index(BKING)
-
-                        if (isinCheck(current_board, king_pos)):
-                            start = moves[i].index('[') + 1 # +1 to skip over [
-                            end   = moves[i].index(']')
-                            arr   = moves[i][start:end].replace(' ', '').replace("''", '').split(',')    # extracts the moves only
-                            arr.remove(z)
-                            arr = str(arr).replace('[', '').replace(']', '').replace("'",'')
-                            moves[i] = moves[i][:start]+ arr + ']' 
-
-                        current_board = board
-                    else:
-                        pass
+                if (isinCheck(current_board, king_pos)):
+                    target_square.remove(new_piece_pos)
+                
+                moves.update({keys: target_square})
+                current_board = board
     return moves
+
 
 def legal_move_gen(board, color = None):
     moves = []
@@ -167,31 +143,10 @@ def legal_move_gen(board, color = None):
         moves.append('O-O-O')
 
     pseudo_legal_moves = generatePseudoLegalMoves(board,piece=None,color=color)
+    legal_moves        = filterPseudolegalmoves(pseudo_legal_moves, board, color)
+    legal_moves.update({'castle': moves})
+    return legal_moves 
 
-    legal_moves        = filterPseudolegalmoves(pseudo_legal_moves, board, color)+moves
-    out = []
-    ## making the output easeir to work with
-    for i,j in enumerate(legal_moves):
-        k = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
-        piece = board[board_sqs.index(j[:2])]
-        if (len(k) > 1):
-            possible_square = k[1].replace('[]','')
-            possible_square = possible_square.replace('[','')
-            possible_square = possible_square.replace(']', '')
-            possible_square = possible_square.lstrip()
-            possible_square = possible_square.rstrip()
-            possible_square = possible_square.split(',')
-        else: ## basically this only applies for the castleing moves 
-            possible_square = k
-        
-        if ('' in possible_square):
-            possible_square = [x for x in possible_square if x!='']
-        if (' ' in possible_square):
-            possible_square = [x for x in possible_square if x!=' ']
-        possible_square = str(possible_square).replace('[', '').replace(']', '').replace("'",'')
-        out.append((possible_square, piece))
-
-    return out
 
 def isCheckMate(board, turn):
     if (turn == WHITE):
@@ -210,27 +165,25 @@ def isCheckMate(board, turn):
     possible_stalemate = None
     
     pieces_with_no_moves = 0
-    total_legal_moves    = len(legal_moves)
-    if (len(legal_moves) == 1 and len(oppent_legal_moves) == 1):
+    has_no_moves         = False
+
+    if (len(legal_moves) == 1):
+        has_no_moves = True 
+    if (has_no_moves == True and len(oppent_legal_moves) == 1):
         return [0,0,1]  # [mate, stalemate, insufficent material]
+    print(isinCheck(board,king_pos))
+    if (not king_pos in legal_moves):
+        if (isinCheck(board, king_pos) == True):
+            king_has_moves = False
+        elif (isinCheck(board,king_pos) == False):
+            possible_stalemate = True
+        else:
+            return isinCheck(board,king_pos)
 
-    for i,j in enumerate(legal_moves):
-        current_piece = j[1]
-        moves = j[0]
-        if (moves == ''):
-            pieces_with_no_moves+=1
-        if (board.index(current_piece) == king_pos and moves == ''):
-            if (isinCheck(board, king_pos) == True):
-                king_has_moves = False
-            elif (isinCheck(board,king_pos) == False):
-                possible_stalemate = True
-            else:
-                return isinCheck(board,king_pos)
-
-        
-        if (king_has_moves == False and pieces_with_no_moves == total_legal_moves):
-            return [1,0,0]
-        elif (possible_stalemate == True and pieces_with_no_moves == total_legal_moves):
-            return [0,1,0]
+    
+    if (king_has_moves == False and has_no_moves == True):
+        return [1,0,0]
+    elif (possible_stalemate == True and has_no_moves == True):
+        return [0,1,0]
 
     return [0,0,0]
