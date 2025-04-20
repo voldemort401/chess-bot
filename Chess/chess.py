@@ -6,70 +6,73 @@ from pieces.pawn import pawn
 from pieces.rook import rook
 from pieces.knight import knight
 def generatePseudoLegalMoves(board, piece=None, color=None):
-    all_pseudo_moves    = [] 
+    pseudo_moves        = dict()
     turn                = board[64]
     if (piece != None):
         for i,j in enumerate(board):
          if (j != EMPTY and i < 64):
+             position = board_sqs[i]
              if (turn == BLACK or color == BLACK):
                  if (j == BKNIGHT and piece == 'N'):
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(knight(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(knight( piece_pos=position, board=board)) }) 
                  elif (j == BKING and piece == 'K'):               
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(king(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(king(piece_pos=position, board=board))})
                  elif (j == BROOK and piece == 'R'):  
-                    all_pseudo_moves.append(f'{board_sqs[i]}:  {list(set(rook(board_sqs[i], board)))}')
+                    pseudo_moves.update({ position:  list( rook(piece_pos=position, board=board))})
                  elif (j == BBISHOP and piece == 'B'): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(bishop(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(bishop(piece_pos=position, board=board))})
                  elif (j == BPAWN and piece == ''): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(pawn(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(pawn(piece_pos=position, board=board))})
                  elif (j == BQUEEN and piece == 'Q'):        
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(queen(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(queen(piece_pos=position, board=board))})
 
              elif (turn == WHITE and color == WHITE):
                  if (j == WKNIGHT and piece == 'N'):                     
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(knight(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(knight(piece_pos=position, board=board))})
                  elif (j == WKING and piece == 'K'):              
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(king(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(king(piece_pos=position, board=board))})
                  elif (j == WROOK and piece == 'R'):
-                     all_pseudo_moves.append(f'{board_sqs[i]}:  {list(set(rook(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(rook(piece_pos=position, board=board))})
                  elif (j == WBISHOP and piece == 'B'): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(bishop(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(bishop(piece_pos=position, board=board))})
                  elif (j == WPAWN and piece == ''): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(pawn(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(pawn(piece_pos=position, board=board))})
                  elif (j == WQUEEN and piece == 'Q'):       
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(queen(board_sqs[i], board)))}')
+                     pseudo_moves.update({ position: list(queen(piece_pos=position, board=board))})
      
     else:
         for i,j in enumerate(board):
          if (j != EMPTY and i < 64):
+             position = board_sqs[i]
              if (turn == BLACK or color == BLACK):
                  if (j == BKNIGHT):
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(knight(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(knight(piece_pos=position, board=board))})
                  if (j == BKING):               
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(king(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(king(piece_pos=position, board=board))})
                  if (j == BROOK):
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(rook(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(rook(piece_pos=position, board=board))})
                  if (j == BBISHOP): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(bishop(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(bishop(piece_pos=position, board=board))})
                  if (j == BPAWN): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(pawn(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(pawn(piece_pos=position, board=board))})
                  if (j == BQUEEN):        
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(queen(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(queen(piece_pos=position, board=board))})
 
              elif (turn == WHITE or color == WHITE):
                  if (j == WKNIGHT):                     
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(knight(board_sqs[i], board)))}')
+                     pseudo_moves.update({position : list(knight(piece_pos=position, board=board))})
                  if (j == WKING):              
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(king(board_sqs[i], board)))} ')
+                     pseudo_moves.update({position : list(king(piece_pos=position, board=board))})
                  if (j == WROOK):
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(rook(board_sqs[i], board)))} ')
+                     pseudo_moves.update({position : list(rook(piece_pos=position, board=board))})
                  if (j == WBISHOP): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(bishop(board_sqs[i], board)))} ')
+                     pseudo_moves.update({position : list(bishop(piece_pos=position, board=board))})
                  if (j == WPAWN): 
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(pawn(board_sqs[i], board)))} ')
+                     pseudo_moves.update({position : list(pawn(piece_pos=position, board=board))})
                  if (j == WQUEEN):       
-                     all_pseudo_moves.append(f'{board_sqs[i]}: {list(set(queen(board_sqs[i], board)))} ')
-    return all_pseudo_moves
+                     pseudo_moves.update({position : list(queen(piece_pos=position, board=board))})
+
+    return pseudo_moves
  
 
 def isinCheck(board, king_pos) -> bool | str:

@@ -105,4 +105,4 @@ def bishop(piece_pos: str, board: list[str], q=0 ):
             if (j < 0):
                 possible_pos.remove(j)
         
-        return list(possible_pos)
+        return set(possible_pos)

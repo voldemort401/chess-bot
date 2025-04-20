@@ -80,4 +80,4 @@ def pawn(piece_pos:str, board:list[str]):
         if (canenpassant):
             print(i,j) 
         
-    return plegal_sq
+    return set(plegal_sq)

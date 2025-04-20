@@ -25,7 +25,7 @@ def king(piece_pos, board: list[str]):
             possible_moves.remove(i)
         elif (board[i][:3] == color):
             possible_moves.remove(i)
-    return possible_moves
+    return set(possible_moves)
 
 def castle(piece_pos, board: list, move:str):
     from Chess.chess import isinCheck

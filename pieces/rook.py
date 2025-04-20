@@ -1,9 +1,9 @@
 from Chess.vars import *
-def rook(pos_piece: str, board: list[str], q=0):
+def rook(piece_pos: str, board: list[str], q=0):
     pos = []
-    piece = board[board_sqs.index(pos_piece)]
+    piece = board[board_sqs.index(piece_pos)]
 
-    piece_index = board_sqs.index(pos_piece) 
+    piece_index = board_sqs.index(piece_pos) 
     piece_index2 = piece_index
     
     piece_sq = board_sqs[piece_index] # find the pos of the piece in algebric notation 
@@ -42,7 +42,7 @@ def rook(pos_piece: str, board: list[str], q=0):
     
 
 
-    piece_index = board_sqs.index(pos_piece) 
+    piece_index = board_sqs.index(piece_pos) 
     piece_index2 = piece_index 
     # horizontal movements
     for i in range(8):
@@ -71,5 +71,5 @@ def rook(pos_piece: str, board: list[str], q=0):
                 elif (board[piece_index2][:3] == color):
                     break
     
-    return pos 
+    return set(pos)
 

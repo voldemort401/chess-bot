@@ -67,4 +67,4 @@ def knight(piece_pos:str, board:list[str]):
             pass
         else:
             possible_moves.remove(i)
-    return possible_moves
+    return set(possible_moves)
