@@ -75,21 +75,22 @@ def generatePseudoLegalMoves(board, piece=None, color=None):
     pseudo_moves = {k:v for k,v in pseudo_moves.items() if v != []} # removes the pieces with no moves
     return pseudo_moves 
  
-def isinCheck(board, king_pos) -> bool | str:
-    color = board[king_pos][:3]
-
+def isinCheck(board, king_pos, color=None) -> bool | str:
+    if (color == None):
+        color = board[64]
+    
     if (color == WHITE):
         enmy_color = BLACK
     elif (color == BLACK):
         enmy_color = WHITE
     else:
-        return f'ERR: Failed to get color color={color}'
+        return f'ERR: Failed to get color color={color} king_pos={king_pos}'
     
     if (type(king_pos) == int):
         if (king(king_pos, board) == []):
             return False
     elif (type(king_pos) == str):
-        if (king(board_sqs[king_pos], board) == []):
+        if (king(board_sqs.index(king_pos), board) == []):
             return False
 
     black_moves = generatePseudoLegalMoves(board=board, piece=None, color=enmy_color)
@@ -137,9 +138,11 @@ def legal_move_gen(board, color = None):
     elif (board[64] == WHITE or color == WHITE):
         king_pos = board_sqs[board.index(WKING)]
 
-    if (type(castle(king_pos, board, 'O-O')) != str):
+    o_o,o_o_o = (castle(king_pos, board, 'O-O', out=0),  castle(king_pos, board, 'O-O-O', out=0)) 
+    if (o_o == True):
         moves.append('O-O')
-    if (type(castle(king_pos, board, 'O-O-O')) != str):
+
+    if (o_o_o == True):
         moves.append('O-O-O')
 
     pseudo_legal_moves = generatePseudoLegalMoves(board,piece=None,color=color)

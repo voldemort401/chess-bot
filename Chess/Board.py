@@ -33,7 +33,6 @@ class board():
         half_move_clock    = int(met[3])
         castle_rights      = met[1]   
         en_passant_squares = met[2]
-
         # create the board
         board=[]
         for i in range(len(fen_board)):
@@ -74,6 +73,21 @@ class board():
         board.append(half_move_clock)
         board.append(castle_rights)
         board.append(en_passant_squares)
+
+        ## setting castle rights
+        if (castle_rights == '-'):
+            king_moved[0] = 1
+            king_moved[1] = 1
+
+        if (castle_rights.find('k') == -1):
+            rook_moved[2] = 1
+        if (castle_rights.find('K') == -1):
+            rook_moved[0] = 1
+        if (castle_rights.find('q') == -1):
+            rook_moved[3] = 1
+        if (castle_rights.find('Q') == -1):
+            rook_moved[1] = 1
+        
 
         self.board = board
         return board
@@ -127,29 +141,18 @@ class board():
                 return "Invalid move"
             bmove = move  
             Piece_is_pawn = False
-            if (move.lstrip().rstrip() == 'O-O'):
+            move = move.upper()
+            if (move.lstrip().rstrip() == 'O-O' or move.lstrip().rstrip() == 'O-O-O'):
                 if (turn == WHITE):
                     king_pos = board.index(WKING)
                 elif (turn == BLACK):
                     king_pos = board.index(BKING)
                 else:
                     return 'Unexpected error occured'
-                if (type(castle(king_pos, self.board, move.lstrip().rstrip())) == str):
+
+                if (castle(king_pos, self.board, move.lstrip().rstrip(), out=0) == False):
                     return 'Illegal move'
 
-                self.board = castle(king_pos, self.board, move.lstrip().rstrip)
-
-            elif (move.lstrip().rstrip() == 'O-O-O'):
-                if (turn == WHITE):
-                    king_pos = board.index(WKING)
-                elif (turn == BLACK):
-                    king_pos = board.index(BKING)
-                else:
-                    return 'Unexpected error occured'
-                
-                if (type(castle(king_pos, self.board, move.lstrip().rstrip())) == str):
-                    return 'Illegal move'
-                
                 self.board = castle(king_pos, self.board, move.lstrip().rstrip())
 
 
@@ -169,39 +172,38 @@ class board():
             target_square = move[1:] if Piece_is_pawn == False else move
             Plegal_moves  = generatePseudoLegalMoves(board,piece,turn)
             Plegal_moves  = filterPseudolegalmoves(Plegal_moves, self.board) 
+            piece = piece.upper()
 
             if (turn == WHITE):
-                if (piece == 'N' or piece == 'n'):                    
+                if (piece == 'N' ):                    
                     piece = WKNIGHT                                                                                          
-                elif (piece == 'K' or piece == 'k'):              
+                elif (piece == 'K' ):              
                     piece = WKING
                     king_moved[0] = 1 
-                elif (piece == 'R' or piece == 'r'):
+                elif (piece == 'R' ):
                     piece = WROOK
-                    rook_moved[0] = 1
-                elif (piece == 'B' or piece == 'b'): 
+                elif (piece == 'B' ): 
                     piece = WBISHOP
                 elif (piece == ''): 
                     piece = WPAWN
-                elif (piece == 'Q' or piece == 'q'):       
+                elif (piece == 'Q' ):       
                     piece = WQUEEN
             else:
-                if (piece  == 'N' or piece == 'n'):
+                if (piece  == 'N' ):
                     piece = BKNIGHT
-                elif ( piece == 'K' or piece == 'k'):               
+                elif ( piece == 'K' ):               
                     piece = BKING
                     king_moved[1] = 1 
-                elif ( piece == 'R' or piece == 'r'):
+                elif ( piece == 'R' ):
                     piece = BROOK
-                    rook_moved[1] = 1
-                elif ( piece == 'B' or piece == 'b'): 
+                elif ( piece == 'B' ): 
                     piece = BBISHOP
                 elif ( piece == ''): 
                     piece = BPAWN
-                elif ( piece == 'Q' or piece == 'q'):        
+                elif ( piece == 'Q' ):        
                     piece = BQUEEN
              
-            for indx,keys in enumerate(Plegal_moves):
+            for keys in Plegal_moves:
                 squares                = Plegal_moves.get(keys)
                 old_piece_pos          = board_sqs.index(keys)
                 new_piece_pos          = board_sqs.index(target_square)
@@ -231,6 +233,16 @@ class board():
 
                     board[66]==board[66]+1
  
+
+                if (keys == 'a1' and piece == WROOK):
+                    rook_moved[1] = 1
+                elif (keys == 'h1' and piece == WROOK):
+                    rook_moved[0] = 1
+
+                if (keys == 'a8' and piece == WROOK):
+                    rook_moved[3] = 1
+                elif (keys == 'h8' and piece == WROOK):
+                    rook_moved[2] = 1
 
 
             if (not self.draw() and not self.checkmate()):

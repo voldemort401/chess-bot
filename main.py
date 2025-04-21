@@ -1,5 +1,5 @@
 import Chess 
 from pieces import pawn
 chess = Chess.Chess()
-board = chess.Board(fen="6R1/4r3/8/k7/Ppr5/4K3/6R1/8 w - - 3 3")
-print(board.move("Kd3"))
+board = chess.Board(fen="r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1")
+print(board.move("O-O"))

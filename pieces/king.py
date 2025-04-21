@@ -27,83 +27,118 @@ def king(piece_pos, board: list[str]):
             possible_moves.remove(i)
     return set(possible_moves)
 
-def castle(piece_pos, board: list, move:str):
+
+def castle(king_pos, board, move, out=1) -> list:
     from Chess.chess import isinCheck
-    if type(piece_pos) == str:
-        current_pos = board_sqs.index(piece_pos)
-    else:
-        current_pos = piece_pos
-    board_cpy = board
+    if (type(king_pos) == str):
+        king_pos = board_sqs.index(king_pos)
+    move = move.upper()
+    castle_rights = board[67]
+    turn          = board[64]
+    canCastle=kingSidecastle=queenSidecastle=True
+    if (turn == WHITE):
+        if (king_moved[0] == 1):
+            canCastle = False
+        if (isinCheck(board, king_pos)):
+            canCastle = False
+        if (rook_moved[0] == 1):
+            kingSidecastle = False
+        if (rook_moved[1] == 1):
+            queenSidecastle = False
 
-    if (board[current_pos] != WKING and board[current_pos] != BKING):
-        return -1
-    color = board[current_pos][:3] 
-    
 
-    if (color == WHITE and king_moved[0] == 0 and rook_moved[0] == 0):
-        if (board[current_pos+1] == EMPTY and board[current_pos+2] == EMPTY and move == 'O-O'):  ## kingside castle
-            for i in range(2):
-                king_pos = current_pos + 2
-                rook_pos = king_pos-1
-                if (board[63] == WROOK):
-                    board[current_pos] = EMPTY
-                    board[63]          = EMPTY
-                    board[king_pos]    = WKING
-                    board[rook_pos]    = WROOK
-                    if (isinCheck(board, king_pos)):
-                        board = board_cpy
-                        return "can't O-O"
-                else:
-                    return "can't O-O"
-            return board
-            
-        if (board[current_pos-1] == EMPTY and board[current_pos-2] == EMPTY and board[current_pos-3] == EMPTY and move == 'O-O-O'): ## queenside castle
-            for i in range(2):
-                king_pos = current_pos + i
-                rook_pos = king_pos-1
+        if (canCastle):
+            if (kingSidecastle and move == 'O-O'):
+                for i in range(3):
+                    new_king_pos = king_pos + i
+                    if (isinCheck(board, new_king_pos) == True):
+                        kingSidecastle=False
+                        break
+                    else:
+                        if (i == 2):
+                            rook_position = new_king_pos-1
+                            if (out == 1):
+                                board[king_pos] = EMPTY
+                                board[63]       = EMPTY
+                                board[new_king_pos] =  WKING
+                                board[rook_position] = WROOK
+                                board[65] = board[65]+1 #increment the turn 
+                                board[66] = board[66]+1 # increment the half move clock
+                                kingSidecastle=queenSidecastle=False
+                                return board
+                return kingSidecastle
 
-                if (board[56] == WROOK):
-                    board[current_pos] = EMPTY
-                    board[56]          = EMPTY
-                    board[king_pos]    = WKING
-                    board[rook_pos]    = WROOK
-                    if (isinCheck(board, king_pos)):
-                        board = board_cpy
-                        return "can't O-O-O"
-                else:
-                    return "Can't O-O-O"
-            return board
 
-    elif (color == BLACK and king_moved[1] == 0 and rook_moved[1] == 0):
-        if (board[current_pos+1] == EMPTY and board[current_pos+2] == EMPTY and move == 'O-O'):  ## kingside castle
-            for i in range(2):
-                king_pos = current_pos + i 
-                rook_pos = king_pos-1
-                if (board[7] == BROOK):
-                    board[current_pos] = EMPTY
-                    board[7]          = EMPTY
-                    board[king_pos]    = BKING
-                    board[rook_pos]    = BROOK
-                    if (isinCheck(board, king_pos)):
-                        board = board_cpy
-                        return "Can't O-O"
-                else:
-                    return "Can't O-O"
-            return board
+            if (queenSidecastle):                
+                for i in range(3):
+                    new_king_pos = king_pos - i
+                    if (isinCheck(board, new_king_pos) == True):
+                        queenSidecastle=False
+                        break
+                    else:
+                        if (i == 2):
+                            rook_position = new_king_pos+1
+                            if (out == 1):
+                                board[king_pos] = EMPTY
+                                board[56]       = EMPTY
+                                board[new_king_pos] = WKING
+                                board[rook_position] = WROOK
+                                kingSidecastle=queenSidecastle=False
+                                board[65] = board[65]+1
+                                board[66] = board[66]+1
+                                return board
+                return queenSidecastle 
 
-        if (board[current_pos-1] == EMPTY and board[current_pos-2] == EMPTY and board[current_pos-3] == EMPTY and move == 'O-O-O'): ## queenside castle
-            for i in range(2):
-                king_pos = current_pos + i
-                rook_pos = king_pos-1
-                if (board[0] == BROOK):
-                    board[current_pos] = EMPTY
-                    board[0]          = EMPTY
-                    board[king_pos]    = BKING
-                    board[rook_pos]    = BROOK
-                    if (isinCheck(board, king_pos)):
-                        board = board_cpy
-                        return "Can't O-O-O"
-                else:
-                    return "Can't O-O-O"
-            return board
-    return "Cant castle"
+        
+
+
+    elif (turn == BLACK):
+        if (king_moved[1] == 1):
+            canCastle = False
+        if (isinCheck(board, king_pos)):
+            canCastle = False
+        if (rook_moved[2] == 1):
+            kingSidecastle = False
+        if (rook_moved[3] == 1):
+            queenSidecastle = False
+
+
+        if (canCastle):
+            if (kingSidecastle and move == 'O-O'):
+                for i in range(3):
+                    new_king_pos = king_pos + i
+                    if (isinCheck(board, new_king_pos) == True):
+                        kingSidecastle=False
+                        break
+                    else:
+                        if (i == 2):
+                            rook_position = new_king_pos-1
+                            if (out == 1):
+                                board[king_pos] = EMPTY
+                                board[7]       = EMPTY
+                                board[new_king_pos] = BKING
+                                board[rook_position] = BROOK
+                                board[66] = board[66]+1
+                                return board
+                return kingSidecastle
+
+
+            if (queenSidecastle):                
+                for i in range(3):
+                    new_king_pos = king_pos - i
+                    if (isinCheck(board, new_king_pos) == True):
+                        queenSidecastle=False
+                        break
+                    else:
+                        if (i == 2):
+                            rook_position = new_king_pos+1
+                            if (out == 1):
+                                board[king_pos] = EMPTY
+                                board[2]       = EMPTY
+                                board[new_king_pos] = BKING
+                                board[66] = board[66]+1 #increment the half move clock
+                                board[rook_position] = BROOK
+                                return board
+                return queenSidecastle 
+
+        
