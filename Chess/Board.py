@@ -2,54 +2,79 @@ from Chess.vars import * ## importing the variables
 from Chess.chess import generatePseudoLegalMoves, filterPseudolegalmoves, isCheckMate
 from pieces.king import castle
 class board():
-    def __init__(self,fen = None):
-        self.fen = fen
+    def __init__(self,fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" ):
         self.board=[]
-        if (fen != None):
-            self.fen = fen
+        if (fen.find('w') != -1):
+            pointer = fen.find('w')
         else:
-            self.fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" 
-
+            pointer = fen.find('b')
+        
+        self.fen = dict()
+        self.fen.update({fen[:pointer]: fen[pointer:]})
+    
     def __create_board__(self):
-        if (self.fen.find('w') == -1 and self.fen.find(' b ') == -1):
-            return -1 
-        turn = WHITE if (self.fen.find('w') != -1) else BLACK
-        board=[]
-        move_counter = 0
-        for i,j in enumerate(self.fen):
-            if (i <= self.fen.find('w') or i<= self.fen.find(' b ')):
-                try:
-                    for k in range(int(self.fen[i])):
-                        board.append(EMPTY)                
+        fen_board = list(self.fen.keys())[0].lstrip().rstrip()
+        met       = list(self.fen.values())[0]
+        if (len(met) < 9):
+            return 'Invalid Fen'
+        met = met.split(' ')
+        ## checking if fen is valid 
+        if (len(fen_board.split('/')) != 8):
+            return 'Invalid Fen'
+        if (not 'w' in met and not 'b' in met):
+            return 'Invalid Fen'
 
-                except ValueError:
-                    ## LOWERCASE BLACK    UPPERCASE WHITE 
-                    if (j == 'n'):
-                        board.append(BKNIGHT)
-                    if (j == 'k'):                     
-                        board.append(BKING)
-                    if (j == 'r'):
-                        board.append(BROOK)
-                    if (j == 'b'): 
-                        board.append(BBISHOP)
-                    if (j == 'p'): 
-                        board.append(BPAWN)
-                    if (j == 'q'):                    
-                        board.append(BQUEEN)
-                    if (j == 'N'):                     
-                        board.append(WKNIGHT)
-                    if (j == 'K'):                    
-                        board.append(WKING)
-                    if (j == 'R'):
-                        board.append(WROOK)
-                    if (j == 'B'): 
-                        board.append(WBISHOP)
-                    if (j == 'P'): 
-                        board.append(WPAWN)
-                    if (j == 'Q'):                   
-                        board.append(WQUEEN)
+        if ('w' in met): 
+            turn = WHITE
+        else:
+            turn = BLACK
+
+        move_counter       = int(met[-1])
+        half_move_clock    = int(met[3])
+        castle_rights      = met[1]   
+        en_passant_squares = met[2]
+
+        # create the board
+        board=[]
+        for i in range(len(fen_board)):
+            piece = fen_board[i]
+            if (piece != '/'):
+                if (piece == 'n'):
+                    board.append(BKNIGHT)
+                elif (piece == 'k'):                     
+                    board.append(BKING)
+                elif (piece == 'r'):
+                    board.append(BROOK)
+                elif (piece == 'b'): 
+                    board.append(BBISHOP)
+                elif (piece == 'p'): 
+                    board.append(BPAWN)
+                elif (piece == 'q'):                    
+                    board.append(BQUEEN)
+                elif (piece == 'N'):                     
+                    board.append(WKNIGHT)
+                elif (piece == 'K'):                    
+                    board.append(WKING)
+                elif (piece == 'R'):
+                    board.append(WROOK)
+                elif (piece == 'B'): 
+                    board.append(WBISHOP)
+                elif (piece == 'P'): 
+                    board.append(WPAWN)
+                elif (piece == 'Q'):                   
+                    board.append(WQUEEN)
+                
+                else:
+                    empty_squares = int(piece)
+                    for k in range(empty_squares):
+                        board.append(EMPTY)
+        
         board.append(turn)
         board.append(move_counter)
+        board.append(half_move_clock)
+        board.append(castle_rights)
+        board.append(en_passant_squares)
+
         self.board = board
         return board
 
@@ -96,6 +121,7 @@ class board():
     def move(self, move: str):
         board = self.__get_current_board__()
         if (not self.draw() and not self.checkmate()):
+
             turn = self.board[64]
             if (move == ''):
                 return "Invalid move"
@@ -128,12 +154,10 @@ class board():
 
 
             if (move.rfind('x')  != -1):
-                isCapturing = True
                 move = move.replace('x','')
-
             if (move.rfind('+')  != -1):
-                isChecking = True    
                 move = move.replace('+','')
+
 
             if (move[0] in ('a','b','c','d','e','f','g','h')):
                 Piece_is_pawn=True 
@@ -143,8 +167,9 @@ class board():
 
             piece = move[0] if Piece_is_pawn == False else ''
             target_square = move[1:] if Piece_is_pawn == False else move
-            Plegal_moves  = set(generatePseudoLegalMoves(board,piece,turn))
-            Plegal_moves  = filterPseudolegalmoves(list(Plegal_moves), self.board) 
+            Plegal_moves  = generatePseudoLegalMoves(board,piece,turn)
+            Plegal_moves  = filterPseudolegalmoves(Plegal_moves, self.board) 
+
             if (turn == WHITE):
                 if (piece == 'N' or piece == 'n'):                    
                     piece = WKNIGHT                                                                                          
@@ -176,48 +201,43 @@ class board():
                 elif ( piece == 'Q' or piece == 'q'):        
                     piece = BQUEEN
              
-            for i,j in enumerate(Plegal_moves):
-                if (j.__contains__(str(board_sqs.index(target_square)))):    
-                  j = j.split(':') # splitting into 2 part eg: ['a2', '[moves]'] makes it easier to only get the moves portion
-                  old_piece_pos = board_sqs.index(j[0].lstrip())
-                  new_piece_pos = board_sqs.index(target_square)
+            for indx,keys in enumerate(Plegal_moves):
+                squares                = Plegal_moves.get(keys)
+                old_piece_pos          = board_sqs.index(keys)
+                new_piece_pos          = board_sqs.index(target_square)
 
-                  if (self.board[new_piece_pos][:3] != turn and self.board[new_piece_pos] != EMPTY):
-                    captured_pieces.append(self.board[new_piece_pos])
-                  self.board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(self.board)]
-                  self.board = [piece if x == new_piece_pos else o for x,o in enumerate(self.board)]
-                  ## updating the turn and move counter
-                  if (turn == WHITE):
-                    print(self.board[65])
-                    move_counter = self.board[65]
-                    self.board[64] = BLACK
-                    self.board[65] = int(move_counter)+1 
+                if (new_piece_pos in squares):    
+                    if (self.board[new_piece_pos][:3] != turn and self.board[new_piece_pos] != EMPTY):
+                        captured_pieces.append(self.board[new_piece_pos])
+
+                    ## updating the turn and move counter
+                    if (turn == WHITE):
+                        print(self.board[65])
+                        move_counter = self.board[65]
+                        self.board[64] = BLACK
+                        self.board[65] = int(move_counter)+1 
+
+   
+                    elif (turn == BLACK):
+                        self.board[64] = WHITE
+                    self.board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(self.board)]
+                    self.board = [piece if x == new_piece_pos else o for x,o in enumerate(self.board)]
+
 
                     if (piece == ''):
-                        half_move_clock = 0
+                        board[66] = 0
                     if(board[new_piece_pos]!= EMPTY and board[new_piece_pos][:3] != turn):
-                        half_move_clock =0 
+                        board[66] =0 
 
-                    half_move_clock+=1
+                    board[66]==board[66]+1
+ 
 
-                  elif (turn == BLACK):
-                    self.board[64] = WHITE
-                  break
-
-            move_counter = int(self.board[65])
-            if (turn == WHITE):
-                moves_played.append(['', ''])
-                moves_played[move_counter-1][0] = bmove
-            elif (turn == BLACK):
-                moves_played[move_counter-1][1] = bmove
-            else:
-                return f'turn value "{turn}" is not valid'
-            
 
             if (not self.draw() and not self.checkmate()):
                 return self.board
             else:
                 return f'GameOver: {isCheckMate(board=self.board, turn=self.board[64])}' 
+
 
         else:
            return f'GameOver: {isCheckMate(board=board, turn=board[64])}' 
