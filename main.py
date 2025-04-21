@@ -1,5 +1,3 @@
 import Chess 
 from pieces import pawn
-chess = Chess.Chess()
-board = chess.Board(fen="r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1")
-print(board.move("O-O"))
+chess = Chess.Chess("r1b2rk1/1p1nbppp/pq1p4/3B4/P2NP3/2N1p3/1PP3PP/R2Q1R1K w - -")

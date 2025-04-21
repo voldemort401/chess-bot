@@ -2,7 +2,12 @@ __all__ = ["chess",  "Board", "vars"]
 
 from . import vars
 class Chess():
-    def Board(self, fen:str=None):
+    def __init__(self,fen):
+        from .Board import board
+        brd = board(fen)
+        self.board = brd.__get_current_board__() 
+
+    def __Board__(self, fen:str=None):
         from .Board import board
         return board(fen)
 
@@ -21,11 +26,13 @@ class Chess():
             cstle.append('O-O')
         if (type(castle(king_pos, board, 'O-O-O')) != str):
             cstle.append('O-O-O')
-
-        pseudo_moves.update({'castle' : cstle})
+        if (cstle != []):
+            pseudo_moves.update({'castle' : cstle})
         return pseudo_moves 
 
 
-    def get_moves(self,board):
-        from .chess import legal_move_gen
-        return legal_move_gen(board)
+    def get_moves(self):
+        from .chess import legal_move_gen, convert_to_san
+        legal_moves = legal_move_gen(self.board)
+        legal_moves = convert_to_san(legal_moves, self.board)
+        return legal_moves 

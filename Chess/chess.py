@@ -147,7 +147,8 @@ def legal_move_gen(board, color = None):
 
     pseudo_legal_moves = generatePseudoLegalMoves(board,piece=None,color=color)
     legal_moves        = filterPseudolegalmoves(pseudo_legal_moves, board, color)
-    legal_moves.update({'castle': moves})
+    if (moves != []):
+        legal_moves.update({'castle': moves})
     return legal_moves 
 
 
@@ -190,3 +191,58 @@ def isCheckMate(board, turn):
         return [0,1,0]
 
     return [0,0,0]
+
+def convert_to_san(moves, board):
+    starting_squares    = list(moves.keys())
+    squares             = list(moves.values())
+    piece               = board[board_sqs.index(starting_squares[0])]
+    color               = piece[:3]
+    enemy_color         = BLACK if color == WHITE else WHITE
+    
+    brd_cpy             = board.copy()
+    enemy_king_pos      = board.index(BKING) if enemy_color == BLACK else board.index(WKING)
+    capturing=checking  = False
+    mvs                 = []    
+    for i,j in enumerate(squares):
+        piece               = board[board_sqs.index(starting_squares[i])]
+        for x,o in enumerate(j):
+            start = board_sqs.index(starting_squares[i])
+            san = board_sqs[o]
+
+            if (board[o] != EMPTY):
+                if (piece != BPAWN or piece != WPAWN):
+                    san = 'x'+san
+                else:
+                    san = start+'x'+san
+
+            if (piece == WQUEEN or piece == BQUEEN):
+                san = 'Q'+san
+            if (piece == WKING or piece == BKING):
+                san = 'K'+san
+            if (piece == WKNIGHT or piece == BKNIGHT):
+                san = 'N'+san
+            if (piece == WROOK or piece == BROOK):
+                san = 'R'+san
+            if (piece == WBISHOP or piece == BBISHOP):
+                san = 'B'+san
+            brd_cpy[start] = EMPTY
+            brd_cpy[o]     = piece
+
+            if (isinCheck(board=brd_cpy,king_pos=enemy_king_pos, color=enemy_color)):
+                san = san+'+'
+
+            if (san in mvs):
+                files,ranks = starting_squares[i]
+                if (san.__contains__('x')):
+                    san = list(san)
+                    san.insert(1,files)
+                    san = "".join(san)
+                else:
+                    san = list(san)
+                    san.insert(1,files)
+                    san = "".join(san)
+            brd_cpy = board.copy()     
+            mvs.append(san) 
+            
+    
+    return mvs

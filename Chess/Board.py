@@ -7,28 +7,28 @@ class board():
         if (fen.find('w') != -1):
             pointer = fen.find('w')
         else:
-            pointer = fen.find('b')
+            pointer = fen.find(' b ')
         
         self.fen = dict()
         self.fen.update({fen[:pointer]: fen[pointer:]})
     
     def __create_board__(self):
         fen_board = list(self.fen.keys())[0].lstrip().rstrip()
-        met       = list(self.fen.values())[0]
-        if (len(met) < 9):
-            return 'Invalid Fen'
-        met = met.split(' ')
+        met       = list(self.fen.values())[0].lstrip().rstrip().split(' ')
         ## checking if fen is valid 
         if (len(fen_board.split('/')) != 8):
-            return 'Invalid Fen'
+            return 'Invalid Fen1'
         if (not 'w' in met and not 'b' in met):
-            return 'Invalid Fen'
+            return 'Invalid Fen2'
 
         if ('w' in met): 
             turn = WHITE
         else:
             turn = BLACK
 
+        if (met[-1] == '-'):
+            met.append('0')
+            met.append('1')
         move_counter       = int(met[-1])
         half_move_clock    = int(met[3])
         castle_rights      = met[1]   
@@ -87,7 +87,6 @@ class board():
             rook_moved[3] = 1
         if (castle_rights.find('Q') == -1):
             rook_moved[1] = 1
-        
 
         self.board = board
         return board
