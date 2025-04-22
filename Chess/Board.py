@@ -128,6 +128,8 @@ class board():
         if (result == [1,0,0] or result == [0,0,0]):
             return False
         
+        if board[66] == 100:
+            return True 
         return True
 
 
@@ -140,7 +142,6 @@ class board():
                 return "Invalid move"
             bmove = move  
             Piece_is_pawn = False
-            move = move.upper()
             if (move.lstrip().rstrip() == 'O-O' or move.lstrip().rstrip() == 'O-O-O'):
                 if (turn == WHITE):
                     king_pos = board.index(WKING)
@@ -213,7 +214,6 @@ class board():
 
                     ## updating the turn and move counter
                     if (turn == WHITE):
-                        print(self.board[65])
                         move_counter = self.board[65]
                         self.board[64] = BLACK
                         self.board[65] = int(move_counter)+1 

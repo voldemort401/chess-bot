@@ -4,8 +4,8 @@ from . import vars
 class Chess():
     def __init__(self,fen):
         from .Board import board
-        brd = board(fen)
-        self.board = brd.__get_current_board__() 
+        self.brd = board(fen)
+        self.board = self.brd.__get_current_board__() 
 
     def __Board__(self, fen:str=None):
         from .Board import board
@@ -36,3 +36,18 @@ class Chess():
         legal_moves = legal_move_gen(self.board)
         legal_moves = convert_to_san(legal_moves, self.board)
         return legal_moves 
+    
+    def by_insuff_material(self):
+        return self.brd.by_insufficent_material()
+
+    def stalemate(self):
+        return self.brd.stalemate()
+    
+    def draw(self):
+        return self.brd.draw()
+    
+    def checkmate(self):
+        return self.brd.checkmate()
+    
+    def move(self,move:str):
+        return self.brd.move(move)
