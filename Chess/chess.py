@@ -4,15 +4,19 @@ from pieces.king import king, castle
 from pieces.queen import queen
 from pieces.pawn import pawn
 from pieces.rook import rook
+from Chess.Board import board
 from pieces.knight import knight
 def generatePseudoLegalMoves(board, piece=None, color=None):
     pseudo_moves        = dict()
-    turn                = board[64]
+    if (color != None):
+        turn = color
+    else:
+        turn                = board[64]
     if (piece != None):
         for i,j in enumerate(board):
          if (j != EMPTY and i < 64):
              position = board_sqs[i]
-             if (turn == BLACK or color == BLACK):
+             if (turn == BLACK ):
                  if (j == BKNIGHT and piece == 'N'):
                      pseudo_moves.update({ position: list(knight( piece_pos=position, board=board)) }) 
                  elif (j == BKING and piece == 'K'):               
@@ -26,7 +30,7 @@ def generatePseudoLegalMoves(board, piece=None, color=None):
                  elif (j == BQUEEN and piece == 'Q'):        
                      pseudo_moves.update({ position: list(queen(piece_pos=position, board=board))})
 
-             elif (turn == WHITE and color == WHITE):
+             elif (turn == WHITE ):
                  if (j == WKNIGHT and piece == 'N'):                     
                      pseudo_moves.update({ position: list(knight(piece_pos=position, board=board))})
                  elif (j == WKING and piece == 'K'):              
@@ -44,7 +48,7 @@ def generatePseudoLegalMoves(board, piece=None, color=None):
         for i,j in enumerate(board):
          if (j != EMPTY and i < 64):
              position = board_sqs[i]
-             if (turn == BLACK or color == BLACK):
+             if (turn == BLACK ):
                  if (j == BKNIGHT):
                      pseudo_moves.update({position : list(knight(piece_pos=position, board=board))})
                  if (j == BKING):               
@@ -58,7 +62,7 @@ def generatePseudoLegalMoves(board, piece=None, color=None):
                  if (j == BQUEEN):        
                      pseudo_moves.update({position : list(queen(piece_pos=position, board=board))})
 
-             elif (turn == WHITE or color == WHITE):
+             elif (turn == WHITE ):
                  if (j == WKNIGHT):                     
                      pseudo_moves.update({position : list(knight(piece_pos=position, board=board))})
                  if (j == WKING):              
@@ -107,37 +111,28 @@ def filterPseudolegalmoves(moves:dict, board, turn = None):
     else:
         current_turn = turn
     current_board = board
-    
+    brd = board()
+ 
     for keys in moves:
         old_piece_pos = board_sqs.index(keys)
         target_square = moves.get(keys) 
         piece         = board[old_piece_pos]
-        for new_piece_pos in target_square:            
-            if (board[new_piece_pos] != WKING and board[new_piece_pos] != BKING):
-                current_board = [EMPTY if x == old_piece_pos else o for x,o in enumerate(current_board)]
-                current_board = [piece if x == new_piece_pos else o for x,o in enumerate(current_board)]
-
-                if (current_turn == WHITE):
-                    king_pos = current_board.index(WKING)
-                elif (current_turn == BLACK):
-                    king_pos = current_board.index(BKING)
-
-                if (isinCheck(current_board, king_pos)):
-                    target_square.remove(new_piece_pos)
-                
-                moves.update({keys: target_square})
-                current_board = board
-    return moves
+        
+        return moves
 
 
 def legal_move_gen(board, color = None):
     moves = []
-    if (board[64] == BLACK or color == BLACK):
+    if (board[64] == BLACK ):
         king_pos = board_sqs[board.index(BKING)]
 
-    elif (board[64] == WHITE or color == WHITE):
+    elif (board[64] == WHITE ):
         king_pos = board_sqs[board.index(WKING)]
 
+    if (color == BLACK):
+        king_pos = board_sqs[board.index(BKING)]
+    elif (color == WHITE):
+        king_pos = board_sqs[board.index(WKING)]
     o_o,o_o_o = (castle(king_pos, board, 'O-O', out=0),  castle(king_pos, board, 'O-O-O', out=0)) 
     if (o_o == True):
         moves.append('O-O')
@@ -167,7 +162,6 @@ def isCheckMate(board, turn):
 
     king_has_moves = None
     possible_stalemate = None
-    
     pieces_with_no_moves = 0
     has_no_moves         = False
 
@@ -175,22 +169,22 @@ def isCheckMate(board, turn):
         has_no_moves = True 
     if (has_no_moves == True and len(oppent_legal_moves) == 1):
         return [0,0,1]  # [mate, stalemate, insufficent material]
-    print(isinCheck(board,king_pos))
-    if (not king_pos in legal_moves):
-        if (isinCheck(board, king_pos) == True):
-            king_has_moves = False
-        elif (isinCheck(board,king_pos) == False):
-            possible_stalemate = True
-        else:
-            return isinCheck(board,king_pos)
 
-    
-    if (king_has_moves == False and has_no_moves == True):
-        return [1,0,0]
-    elif (possible_stalemate == True and has_no_moves == True):
-        return [0,1,0]
+    for i in legal_moves:
+        squares = legal_moves.get(i)
+        piece_pos = board_sqs.index(i)
+        if (squares == []):
+            pieces_with_no_moves+=1
+        
+        if (board[piece_pos] == WKING or board[piece_pos] == BKING):
+            if (squares == []):
+                king_has_moves = False
+            else:
+                king_has_moves = True
+        
+        if (king_has_moves == False and isinCheck(board,king_pos, turn) and pieces_with_no_moves == len(legal_moves)):
+            return [1,0,0]
 
-    return [0,0,0]
 
 def convert_to_san(moves, board):
     starting_squares    = list(moves.keys())
@@ -198,7 +192,7 @@ def convert_to_san(moves, board):
     piece               = board[board_sqs.index(starting_squares[0])]
     color               = piece[:3]
     enemy_color         = BLACK if color == WHITE else WHITE
-    
+
     brd_cpy             = board.copy()
     enemy_king_pos      = board.index(BKING) if enemy_color == BLACK else board.index(WKING)
     capturing=checking  = False

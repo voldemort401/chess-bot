@@ -47,37 +47,37 @@ def pawn(piece_pos:str, board:list[str]):
         if (color == BLACK and board[piece_index+7][:3] != color and board[piece_index+7] != EMPTY):
             plegal_sq.append(piece_index+7)
     
-    ## enpassant
-    possible_enpassant_squares = []
-    canenpassant               = None 
-    piece_index                = board_sqs.index(piece_pos) 
-
-    if (color == WHITE):
-        if (file == "a"):
-            possible_enpassant_squares.append(piece_index-7)
-        elif (file == "h"):
-            possible_enpassant_squares.append(piece_index-9)
-        else:
-            possible_enpassant_squares.append(piece_index-9)
-            possible_enpassant_squares.append(piece_index-7)
-
-    elif (color == BLACK):
-        if (file == "a"):
-            possible_enpassant_squares.append(piece_index+9)
-        elif (file == "h"):
-            possible_enpassant_squares.append(piece_index+7)
-        else:
-            possible_enpassant_squares.append(piece_index+7)
-            possible_enpassant_squares.append(piece_index+9)
-    
-    for i,j in enumerate(possible_enpassant_squares):
-        if (board[piece_index+1] == WPAWN and board[piece_index-1] == WPAWN):
-            canenpassant = False
-            
-        if (board[piece_index+1] == BPAWN and board[piece_index-1] == BPAWN):
-            canenpassant = False
-         
-        if (canenpassant):
-            print(i,j) 
-        
+    ## enpassant who needs enpassant anyways
+#    possible_enpassant_squares = []
+#    canenpassant               = None 
+#    piece_index                = board_sqs.index(piece_pos) 
+#
+#    if (color == WHITE):
+#        if (file == "a"):
+#            possible_enpassant_squares.append(piece_index-7)
+#        elif (file == "h"):
+#            possible_enpassant_squares.append(piece_index-9)
+#        else:
+#            possible_enpassant_squares.append(piece_index-9)
+#            possible_enpassant_squares.append(piece_index-7)
+#
+#    elif (color == BLACK):
+#        if (file == "a"):
+#            possible_enpassant_squares.append(piece_index+9)
+#        elif (file == "h"):
+#            possible_enpassant_squares.append(piece_index+7)
+#        else:
+#            possible_enpassant_squares.append(piece_index+7)
+#            possible_enpassant_squares.append(piece_index+9)
+#    
+#    for i,j in enumerate(possible_enpassant_squares):
+#        if (board[piece_index+1] == WPAWN and board[piece_index-1] == WPAWN):
+#            canenpassant = False
+#            
+#        if (board[piece_index+1] == BPAWN and board[piece_index-1] == BPAWN):
+#            canenpassant = False
+#         
+#        if (canenpassant):
+#            print(i,j) 
+#        
     return set(plegal_sq)

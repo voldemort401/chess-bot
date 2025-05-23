@@ -51,3 +51,6 @@ class Chess():
     
     def move(self,move:str):
         return self.brd.move(move)
+    
+    def undomove(self, move:str):
+        return self.brd.undoMove(move)

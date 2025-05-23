@@ -133,35 +133,34 @@ class board():
         return True
 
 
-    def move(self, move: str):
+    def move(self, move: str, san=1):
         board = self.__get_current_board__()
-        if (not self.draw() and not self.checkmate()):
+        
+        turn = self.board[64]
+        if (move == ''):
+            return "Invalid move"
+        bmove = move  
+        Piece_is_pawn = False
+        if (move.lstrip().rstrip() == 'O-O' or move.lstrip().rstrip() == 'O-O-O'):
+            if (turn == WHITE):
+                king_pos = board.index(WKING)
+            elif (turn == BLACK):
+                king_pos = board.index(BKING)
+            else:
+                return 'Unexpected error occured'
 
-            turn = self.board[64]
-            if (move == ''):
-                return "Invalid move"
-            bmove = move  
-            Piece_is_pawn = False
-            if (move.lstrip().rstrip() == 'O-O' or move.lstrip().rstrip() == 'O-O-O'):
-                if (turn == WHITE):
-                    king_pos = board.index(WKING)
-                elif (turn == BLACK):
-                    king_pos = board.index(BKING)
-                else:
-                    return 'Unexpected error occured'
+            if (castle(king_pos, self.board, move.lstrip().rstrip(), out=0) == False):
+                return 'Illegal move'
 
-                if (castle(king_pos, self.board, move.lstrip().rstrip(), out=0) == False):
-                    return 'Illegal move'
-
-                self.board = castle(king_pos, self.board, move.lstrip().rstrip())
-
-
-            if (move.rfind('x')  != -1):
-                move = move.replace('x','')
-            if (move.rfind('+')  != -1):
-                move = move.replace('+','')
+            self.board = castle(king_pos, self.board, move.lstrip().rstrip())
 
 
+        if (move.rfind('x')  != -1):
+            move = move.replace('x','')
+        if (move.rfind('+')  != -1):
+            move = move.replace('+','')
+
+        if (san == 1):
             if (move[0] in ('a','b','c','d','e','f','g','h')):
                 Piece_is_pawn=True 
 
@@ -171,7 +170,6 @@ class board():
             piece = move[0] if Piece_is_pawn == False else ''
             target_square = move[1:] if Piece_is_pawn == False else move
             Plegal_moves  = generatePseudoLegalMoves(board,piece,turn)
-            Plegal_moves  = filterPseudolegalmoves(Plegal_moves, self.board) 
             piece = piece.upper()
 
             if (turn == WHITE):
@@ -205,8 +203,9 @@ class board():
              
             for keys in Plegal_moves:
                 squares                = Plegal_moves.get(keys)
-                old_piece_pos          = board_sqs.index(keys)
-                new_piece_pos          = board_sqs.index(target_square)
+                if (san == 1):
+                    old_piece_pos          = board_sqs.index(keys)
+                    new_piece_pos          = board_sqs.index(target_square)
 
                 if (new_piece_pos in squares):    
                     if (self.board[new_piece_pos][:3] != turn and self.board[new_piece_pos] != EMPTY):
@@ -242,17 +241,33 @@ class board():
                     rook_moved[3] = 1
                 elif (keys == 'h8' and piece == WROOK):
                     rook_moved[2] = 1
+        return board
 
-
-            if (not self.draw() and not self.checkmate()):
-                return self.board
-            else:
-                return f'GameOver: {isCheckMate(board=self.board, turn=self.board[64])}' 
-
-
+    def undoMove(move:str): 
+        # move is expected to be in format e2e4
+        starting_square = board_sqs.index(move[:2])
+        if (move.__contains__('x')):
+            ending_square = board_sqs.index(move[3:])
+            capturing     = True  
         else:
-           return f'GameOver: {isCheckMate(board=board, turn=board[64])}' 
-    
+            ending_square = board_sqs.index(move[2:])
+            capturing     = False
+
+        if (list[move] in pieces):
+            return 'move format invalid'
+
+        piece_moved                 = self.board[ending_square]        
+        self.board[starting_square] = piece_moved
+
+        if (capturing):
+            captured_piece = captured_pieces[-1]
+            self.board[ending_square] = captured_piece
+        else:
+            self.board[ending_square] = EMPTY
+        
+        return self.board
+        
+
     def __call__(self):
         return self.__get_current_board__()
 

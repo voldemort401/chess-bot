@@ -18,6 +18,7 @@ board      = []
 
 captured_pieces = [] 
 king_moved, rook_moved = [[0,0], [0,0,0,0]]
+pieces = {'N','Q','K','R','B','n','k','q','r','b'}
 
 board_sqs = ['a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8',
              'a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7',
